@@ -1,108 +1,116 @@
 # VibeSale
-POS for jewlery store
+
+Web-based POS platform for a local jewelry business.
+
+## Architecture
 
 ```mermaid
 flowchart LR
-  %% Cliente / Punto de venta
   subgraph CLIENTE[Interfaces]
-    POS[POS multiplataforma]
-    TIENDA[Catalogo en linea]
-    ADMIN[Panel administrativo]
+    POS[POS multiplatform]
+    TIENDA[Online catalog]
+    ADMIN[Admin panel]
   end
 
-  %% API y permisos
-  subgraph ACCESO[Gestion de acceso]
+  subgraph ACCESO[Access management]
     API_GW[API Gateway]
-    ROLES[Roles y permisos]
-    USERS[Usuarios]
+    ROLES[Roles and permissions]
+    USERS[Users]
   end
 
-  %% Servicios
-  subgraph SERVICIOS[Modulos del sistema]
-    CATLG[Catalogo]
-    LABELS[Etiquetas]
-    DISPO[Integracion de dispositivos]
-    MULTI[Multi moneda]
-    CAJA[Cortes de caja]
-    CFDI[Facturacion electronica]
-    ALMACEN[Almacenes]
-    SUCUR[Sucursales]
-    COMPRAS[Registro de compras]
-    DESC[Descuentos]
-    REPORT[Reportes y estadisticas]
-    CREDIT[Creditos compartidos]
-    CATEG[Categorias y departamentos]
-    IMPORT[Importacion masiva]
-    CLAVES[Claves multiples]
-    AJUSTE[Ajustes de inventario]
-    VENDED[Comisiones por vendedor]
-    PROV[Proveedores]
+  subgraph SERVICIOS[System modules]
+    CATLG[Catalog]
+    LABELS[Labels]
+    DISPO[Device integration]
+    MULTI[Multi-currency]
+    CAJA[Cash register closeout]
+    CFDI[Electronic invoicing]
+    ALMACEN[Warehouses]
+    SUCUR[Branches]
+    COMPRAS[Purchases]
+    DESC[Discounts]
+    REPORT[Reports and analytics]
+    CREDIT[Shared credits]
+    CATEG[Categories and departments]
+    IMPORT[Bulk import]
+    CLAVES[Multiple product codes]
+    AJUSTE[Inventory adjustments]
+    VENDED[Sales commissions]
+    PROV[Suppliers]
   end
 
-  %% Datos
-  subgraph DATOS[Datos]
-    DB[(Base de datos)]
-    FILES[(Archivos)]
+  subgraph DATOS[Data]
+    DB[(Database)]
+    FILES[(Files)]
   end
 
-  %% Externos
-  subgraph EXTERNOS[Integraciones externas]
-    SAT[Servicio de facturacion]
-    MSG[Mensajeria]
-    EMAIL[Correo]
-    HW[Dispositivos: impresoras, cajon, escaner, touch]
+  subgraph EXTERNOS[External integrations]
+    SAT[Invoicing service]
+    MSG[Messaging]
+    EMAIL[Email]
+    HW[Devices: printers, drawer, scanner, touch]
   end
 
-  %% Flujos
   POS --> API_GW
   TIENDA --> API_GW
   ADMIN --> API_GW
-
   API_GW --> ROLES
   API_GW --> USERS
-
-  API_GW --> CATLG
-  API_GW --> LABELS
-  API_GW --> DISPO
-  API_GW --> MULTI
-  API_GW --> CAJA
-  API_GW --> CFDI
-  API_GW --> ALMACEN
-  API_GW --> SUCUR
-  API_GW --> COMPRAS
-  API_GW --> DESC
-  API_GW --> REPORT
-  API_GW --> CREDIT
-  API_GW --> CATEG
-  API_GW --> IMPORT
-  API_GW --> CLAVES
-  API_GW --> AJUSTE
-  API_GW --> VENDED
-  API_GW --> PROV
-
-  %% Persistencia
-  CATLG --> DB
-  LABELS --> DB
-  MULTI --> DB
-  CAJA --> DB
-  CFDI --> DB
-  ALMACEN --> DB
-  SUCUR --> DB
-  COMPRAS --> DB
-  DESC --> DB
-  REPORT --> DB
-  CREDIT --> DB
-  CATEG --> DB
-  CLAVES --> DB
-  AJUSTE --> DB
-  VENDED --> DB
-  PROV --> DB
-
-  %% Archivos e integraciones
+  API_GW --> SERVICIOS
+  SERVICIOS --> DB
   IMPORT --> FILES
-  IMPORT --> DB
   DISPO --> HW
   CFDI --> SAT
   CFDI --> EMAIL
   CATLG --> MSG
 ```
+
+## Current implementation (Phase 1 foundation)
+
+Implemented today as a working baseline:
+
+- Shared TypeScript contracts for modules, catalog, quoting, currencies, access, and admin overview.
+- API endpoints for module map, products, quotes, access snapshot, currencies, and overview metrics.
+- React control hub with:
+  - module status board,
+  - product catalog sample,
+  - quote generation form,
+  - recent quote list.
+- In-memory sample data seeded for jewelry workflows.
+
+## API endpoints
+
+- `GET /api/health`
+- `GET /api/message`
+- `GET /api/modules`
+- `GET /api/currencies`
+- `GET /api/access/snapshot`
+- `GET /api/catalog/products`
+- `GET /api/catalog/quotes`
+- `POST /api/catalog/quotes`
+- `GET /api/admin/overview`
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:4000`
+
+## Suggested build order for next phases
+
+1. Access gateway + auth (JWT/session + RBAC enforcement middleware).
+2. Inventory core (warehouses, branches, stock movements, adjustments).
+3. Sales flow (cart, closeout, discounts, commission assignment).
+4. Purchases + suppliers + transfers.
+5. Electronic invoicing (CFDI integration adapter).
+6. Integrations (messaging, email, hardware bridge, bulk import).
+7. Reporting and analytics module with persistent storage.
+
+## Notes
+
+- Data is currently in memory for rapid iteration.
+- Next step is introducing persistent storage and migration tooling.
