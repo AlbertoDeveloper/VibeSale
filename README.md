@@ -6,105 +6,103 @@ flowchart LR
   %% Cliente / Punto de venta
   subgraph CLIENTE[Interfaces]
     POS[POS multiplataforma]
-    TIENDA_EN_LINEA[Catálogo en línea]
-    ADMIN_PANEL[Panel administrativo]
+    TIENDA[Catalogo en linea]
+    ADMIN[Panel administrativo]
   end
 
   %% API y permisos
-  subgraph ACCESO[Gestión de acceso]
-    API_GW(API Gateway)
-    ROLES[Gestor de roles y permisos]
-    USERS[Gestor de usuarios]
+  subgraph ACCESO[Gestion de acceso]
+    API_GW[API Gateway]
+    ROLES[Roles y permisos]
+    USERS[Usuarios]
   end
 
-  %% Núcleo de servicios
-  subgraph SERVICIOS[Servicios y módulos]
-    CATLG[Módulo Catálogo]
-    LABELS[Módulo de etiquetas]
-    DISPO[Integración dispositivos]
-    MULTIMONEDA[Módulo multi‑moneda]
-    CAJA[Módulo cortes de caja]
-    FACTURAS[Facturación CFDI]
-    ALMACENES[Manejo de almacenes]
-    SUCURSALES[Manejo de sucursales]
+  %% Servicios
+  subgraph SERVICIOS[Modulos del sistema]
+    CATLG[Catalogo]
+    LABELS[Etiquetas]
+    DISPO[Integracion de dispositivos]
+    MULTI[Multi moneda]
+    CAJA[Cortes de caja]
+    CFDI[Facturacion electronica]
+    ALMACEN[Almacenes]
+    SUCUR[Sucursales]
     COMPRAS[Registro de compras]
-    DESCUENTOS[Gestor de descuentos]
-    REPORTES[Reportes y estadísticas]
-    CREDITOS[Créditos compartidos]
-    CATEGORIAS[Categorías/Departamentos]
-    IMPORTACION[Importación desde Excel]
-    CLAVES[Claves múltiples]
-    AJUSTE[Ajuste de inventario]
-    VENTAS_VEND[Ventas por vendedor]
-    PROVEEDORES[Registro de proveedores]
+    DESC[Descuentos]
+    REPORT[Reportes y estadisticas]
+    CREDIT[Creditos compartidos]
+    CATEG[Categorias y departamentos]
+    IMPORT[Importacion masiva]
+    CLAVES[Claves multiples]
+    AJUSTE[Ajustes de inventario]
+    VENDED[Comisiones por vendedor]
+    PROV[Proveedores]
   end
 
   %% Datos
-  subgraph DATOS[Base de datos / almacenamiento]
-    DB[(BD relacional)]
-    FILES[(Almacén de archivos)]
+  subgraph DATOS[Datos]
+    DB[(Base de datos)]
+    FILES[(Archivos)]
   end
 
-  %% Integraciones externas
-  subgraph EXTERNOS[Servicios externos]
-    SAT[Servicio CFDI/SAT]
-    WHATSAPP[Envío WhatsApp]
-    EMAIL_SERV[Correo electrónico]
-    HARDWARE[Hardware (impresoras, cajones, escáneres)]
+  %% Externos
+  subgraph EXTERNOS[Integraciones externas]
+    SAT[Servicio de facturacion]
+    MSG[Mensajeria]
+    EMAIL[Correo]
+    HW[Dispositivos: impresoras, cajon, escaner, touch]
   end
 
-  %% Flujos de cliente a servicios
+  %% Flujos
   POS --> API_GW
-  TIENDA_EN_LINEA --> API_GW
-  ADMIN_PANEL --> API_GW
+  TIENDA --> API_GW
+  ADMIN --> API_GW
 
-  %% Autenticación y permisos
   API_GW --> ROLES
   API_GW --> USERS
 
-  %% Acceso a módulos
   API_GW --> CATLG
   API_GW --> LABELS
   API_GW --> DISPO
-  API_GW --> MULTIMONEDA
+  API_GW --> MULTI
   API_GW --> CAJA
-  API_GW --> FACTURAS
-  API_GW --> ALMACENES
-  API_GW --> SUCURSALES
+  API_GW --> CFDI
+  API_GW --> ALMACEN
+  API_GW --> SUCUR
   API_GW --> COMPRAS
-  API_GW --> DESCUENTOS
-  API_GW --> REPORTES
-  API_GW --> CREDITOS
-  API_GW --> CATEGORIAS
-  API_GW --> IMPORTACION
+  API_GW --> DESC
+  API_GW --> REPORT
+  API_GW --> CREDIT
+  API_GW --> CATEG
+  API_GW --> IMPORT
   API_GW --> CLAVES
   API_GW --> AJUSTE
-  API_GW --> VENTAS_VEND
-  API_GW --> PROVEEDORES
+  API_GW --> VENDED
+  API_GW --> PROV
 
-  %% Módulos y datos
+  %% Persistencia
   CATLG --> DB
   LABELS --> DB
-  DISPO --> HARDWARE
-  MULTIMONEDA --> DB
+  MULTI --> DB
   CAJA --> DB
-  FACTURAS --> DB
-  FACTURAS --> SAT
-  FACTURAS --> EMAIL_SERV
-  ALMACENES --> DB
-  SUCURSALES --> DB
+  CFDI --> DB
+  ALMACEN --> DB
+  SUCUR --> DB
   COMPRAS --> DB
-  DESCUENTOS --> DB
-  REPORTES --> DB
-  CREDITOS --> DB
-  CATEGORIAS --> DB
-  IMPORTACION --> FILES
-  IMPORTACION --> DB
+  DESC --> DB
+  REPORT --> DB
+  CREDIT --> DB
+  CATEG --> DB
   CLAVES --> DB
   AJUSTE --> DB
-  VENTAS_VEND --> DB
-  PROVEEDORES --> DB
+  VENDED --> DB
+  PROV --> DB
 
-  %% Notificaciones y mensajería
-  CATLG --> WHATSAPP
+  %% Archivos e integraciones
+  IMPORT --> FILES
+  IMPORT --> DB
+  DISPO --> HW
+  CFDI --> SAT
+  CFDI --> EMAIL
+  CATLG --> MSG
 ```
