@@ -100,6 +100,12 @@ npm run dev
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:4000`
 
+## UI stack
+
+- Tailwind CSS is configured in `apps/web` using the Vite plugin.
+- Global Tailwind import lives in `apps/web/src/index.css`.
+- UI is now utility-first in `apps/web/src/App.tsx` for easier ongoing styling changes.
+
 ## Suggested build order for next phases
 
 1. Access gateway + auth (JWT/session + RBAC enforcement middleware).
